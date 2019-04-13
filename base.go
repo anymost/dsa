@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"math"
+)
 
 /**
 计算的几个特点：输入，输出，正确性，确定性，可行性，有穷性
@@ -13,7 +15,6 @@ import "fmt"
 递归：递归跟踪，递推方程
 递推方程需要递归基
 */
-
 
 /**
 复杂度:
@@ -48,32 +49,78 @@ import "fmt"
 /**
 减而治之
 分而治之
- */
+*/
 
 func hailstone(n int) []int {
 	array := make([]int, 0)
 	for n > 1 {
-		if n % 2 == 0 {
+		if n%2 == 0 {
 			n = n / 2
 		} else {
-			n = 3 * n + 1
+			n = 3*n + 1
 		}
 		array = append(array, n)
 	}
 	return array
 }
 
-func sum(array []int, n int) int {
-	if n < 1 {
-		return 0
+func fibonacci(n int) int {
+	if n < 2 {
+		return n
 	} else {
-		return sum(array, n-1) + array[n-1]
+		return fibonacci(n-1) + fibonacci(n-2)
 	}
 }
 
-func main() {
-	val := sum([]int{1, 2, 3, 4, 5}, 5)
-	fmt.Println(val)
+func fibonacciBest(n int) int {
+	g, f := 1, 0
+	for 0 < n-1 {
+		g = g + f
+		f = g - f
+		n--
+	}
+	return g
 }
 
+func LCSCount(A []byte, B []byte) int {
+	lenA, lenB := len(A), len(B)
+	if lenA == 0 || lenB == 0 {
+		return 0
+	} else if A[lenA-1] == B[lenB-1] {
+		return LCSCount(A[:lenA-1], B[:lenB-1]) + 1
+	} else {
+		return int(math.Max(float64(LCSCount(A[:lenA-1], B)), float64(LCSCount(A, B[:lenB-1]))))
+	}
+}
 
+func LCSByte(A []byte, B []byte) []byte {
+	lenA, lenB := len(A), len(B)
+	if lenA == 0 || lenB == 0 {
+		return []byte{}
+	} else if A[lenA-1] == B[lenB-1] {
+		return append(LCSByte(A[:lenA-1], B[:lenB-1]), A[lenA-1])
+	} else {
+		byteA := LCSByte(A[:lenA-1], B)
+		byteB := LCSByte(A, B[:lenB-1])
+		if len(byteA) > len(byteB) {
+			return byteA
+		} else {
+			return byteB
+		}
+	}
+}
+
+func max2(array []int) []int {
+	max1, max2 := 0, 0
+	for _, val := range array {
+		if val > max2 {
+			if val > max1 {
+				max2 = max1
+				max1 = val
+			} else {
+				max2 = val
+			}
+		}
+	}
+	return []int{max1, max2}
+}

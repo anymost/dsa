@@ -14,7 +14,6 @@ type Singer interface {
 	sayName() string
 }
 
-
 type ListNode struct {
 	Val  int
 	Next *ListNode
@@ -235,9 +234,7 @@ func bitwiseComplement(N int) int {
 		temp = N % 2
 		N = N / 2
 		val = temp ^ 1
-		num = num << 1 + val
+		num = num<<1 + val
 	}
 	return num
 }
-
-
