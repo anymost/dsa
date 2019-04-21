@@ -238,3 +238,61 @@ func bitwiseComplement(N int) int {
 	}
 	return num
 }
+
+type MyHashMap struct {
+	value []int
+}
+
+
+/** Initialize your data structure here. */
+func Constructor() MyHashMap {
+	value := make([]int, 1000000)
+	for index := range value {
+		value[index] = -1
+	}
+	return MyHashMap{
+		value,
+	}
+}
+
+
+/** value will always be non-negative. */
+func (this *MyHashMap) Put(key int, value int)  {
+	this.value[key] = value
+}
+
+
+/** Returns the value to which the specified key is mapped, or -1 if this map contains no mapping for the key */
+func (this *MyHashMap) Get(key int) int {
+	return this.value[key]
+}
+
+
+/** Removes the mapping of the specified value key if this map contains a mapping for the key */
+func (this *MyHashMap) Remove(key int)  {
+	this.value[key] = -1
+}
+
+func findShortestSubArray(nums []int) int {
+	count := make(map[int]int, 0)
+	for _, item := range nums {
+		if val, isExit := count[item]; isExit {
+			count[item] = val + 1
+		} else {
+			count[item] = 1
+		}
+	}
+	largest := 0
+	for _, val := range count {
+		if val > largest {
+			largest = val
+		}
+	}
+	result := 0
+	for _, val := range count {
+		if val == largest {
+			result++
+		}
+	}
+	return result
+}
