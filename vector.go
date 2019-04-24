@@ -1,27 +1,36 @@
 package main
 
-import "fmt"
-
 type Vector struct {
-	data     []int
-	length   int
-	capacity int
+	data []int
+}
+
+func NewVectorWithData(data []int) *Vector {
+	return &Vector{}
 }
 
 func NewVector(length int, capacity int) *Vector {
 	return &Vector{
-		data:     make([]int, length, capacity),
-		length:   length,
-		capacity: capacity,
+		data: make([]int, length, capacity),
 	}
 }
 
+func (vector *Vector) Data() []int {
+	return vector.data
+}
+
+func (vector *Vector) Length() int {
+	return len(vector.data)
+}
+
+func (vector *Vector) Capacity() int {
+	return cap(vector.data)
+}
+
 func (vector *Vector) Expand() {
-	if vector.length < vector.capacity {
+	if len(vector.data) < cap(vector.data) {
 		return
 	}
-	vector.capacity = vector.capacity << 1
-	newData := make([]int, vector.length, vector.capacity)
+	newData := make([]int, vector.Length(), vector.Capacity()<<1)
 	for index, value := range vector.data {
 		newData[index] = value
 	}
@@ -29,9 +38,8 @@ func (vector *Vector) Expand() {
 }
 
 func (vector *Vector) Shrink() {
-	if vector.length<<1 < vector.capacity {
-		vector.capacity = vector.capacity >> 1
-		newData := make([]int, vector.length, vector.capacity)
+	if vector.Length()<<1 < vector.Capacity() {
+		newData := make([]int, vector.Length(), vector.Capacity()>>1)
 		for index, value := range vector.data {
 			newData[index] = value
 		}
@@ -41,22 +49,28 @@ func (vector *Vector) Shrink() {
 
 func (vector *Vector) Insert(index int, value int) {
 	vector.Expand()
-	vector.data = vector.data[0 : vector.length+1]
-	for i := vector.length; vector.length > index; i-- {
+	length := vector.Length()
+	vector.data = vector.data[0 : length+1]
+	for i := length; i > index; i-- {
 		vector.data[i] = vector.data[i-1]
 	}
 	vector.data[index] = value
-	vector.length = vector.length + 1
 }
 
 func (vector *Vector) DeleteMany(low int, high int) {
-	for high < vector.length {
-		vector.data[low] = vector.data[high]
-		low++
-		high++
+	switch {
+	case vector.Length() < high:
+		panic("out of range")
+	case high < vector.Length():
+		for high < vector.Length() {
+			vector.data[low] = vector.data[high]
+			low++
+			high++
+		}
+		vector.data = vector.data[0:low]
+	default:
+		vector.data = vector.data[0:low]
 	}
-	vector.length = low
-	vector.data = vector.data[0:vector.length]
 	vector.Shrink()
 }
 
@@ -71,28 +85,33 @@ func (vector *Vector) Find(value int, low int, high int) int {
 }
 
 func (vector *Vector) Deduplicate() {
+	length := vector.Length()
 	for index, value := range vector.data {
-		prefixIndex := vector.Find(value, 0, index-1)
-		if prefixIndex != 0 {
-			vector.DeleteOne(prefixIndex)
+		if index > 0 {
+			prefixIndex := vector.Find(value, 0, index-1)
+			if prefixIndex != 0 {
+				vector.DeleteOne(prefixIndex)
+			}
 		}
-		suffixIndex := vector.Find(value, index+1, vector.length-1)
-		if suffixIndex != index+1 {
-			vector.DeleteOne(suffixIndex)
+		if index < length-1 {
+			suffixIndex := vector.Find(value, index+1, len(vector.data)-1)
+			if suffixIndex != index+1 {
+				vector.DeleteOne(suffixIndex)
+			}
 		}
 	}
 }
 
 func (vector *Vector) Uniquify() {
 	i, j := 0, 0
-	for j < vector.length {
+	for j < vector.Length() {
 		if vector.data[j] != vector.data[i] {
-			i += 1
+			i++
 			vector.data[i] = vector.data[j]
-			j++
 		}
+		j++
 	}
-	vector.length = i
+	vector.data = vector.data[0:i]
 	vector.Shrink()
 }
 
@@ -100,9 +119,9 @@ func (vector *Vector) BinSearch(value int, low int, high int) int {
 	for low < high {
 		middle := (low + high) >> 1
 		if vector.data[middle] < value {
-			low = middle
+			high = middle
 		} else if value < vector.data[middle] {
-			high = middle + 1
+			low = middle + 1
 		} else {
 			return middle
 		}
@@ -110,16 +129,35 @@ func (vector *Vector) BinSearch(value int, low int, high int) int {
 	return -1
 }
 
-func main() {
-	vec := NewVector(0, 4)
-	vec.Insert(0, 1)
-	vec.Insert(1, 2)
-	vec.Insert(2, 3)
-	vec.Insert(3, 4)
-	vec.Insert(4, 4)
-	vec.Insert(5, 5)
-	vec.Insert(6, 6)
-	index := vec.BinSearch(10, 0, 7)
-	fmt.Println(index)
+func (vector *Vector) FibSearch(value int, low int, high int) int {
+	fib := NewFib(high - low)
+	for low < high {
+		for high-low < fib.get() {
+			fib.prev()
+		}
+		middle := low + fib.get() - 1
+		if value < vector.data[middle] {
+			high = middle
+		} else if vector.data[middle] < value {
+			low = middle + 1
+		} else {
+			return middle
+		}
+	}
+	return -1
+}
 
+func (vector *Vector) BubbleSort() {
+	isSort := false
+	last := vector.Length()
+	for !isSort {
+		isSort = true
+		for i := 0; i < last-1; i++ {
+			if vector.data[i] > vector.data[i+1] {
+				vector.data[i], vector.data[i+1] = vector.data[i+1], vector.data[i]
+				isSort = false
+				last = i + 1
+			}
+		}
+	}
 }
