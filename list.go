@@ -6,6 +6,11 @@ type ListNode struct {
 	next *ListNode
 }
 
+func (node *ListNode) Destroy() {
+	node.prev = nil
+	node.next = nil
+}
+
 func (node *ListNode) Prev() *ListNode{
 	return node.prev
 }
@@ -65,7 +70,7 @@ func (list *List) Get(index int) int {
 	return head.Data()
 }
 
-func (list *List) Find(target int, length int, start *ListNode) *ListNode {
+func (list *List) Find(target, length int, start *ListNode) *ListNode {
 	for length > 0 {
 		if start.Data() == target{
 			return start
@@ -107,4 +112,22 @@ func (list *List) Copy(node *ListNode, length int) {
 		list.size++
 		length--
 	}
+}
+
+func (list *List) Remove(node *ListNode) int {
+	node.Prev().InsertAsNext(node.Next())
+	list.size--
+	node.Destroy()
+	return node.Data()
+}
+
+func (list *List) Clear() {
+	head, n := list.Head(), list.size
+	for n > 0 {
+		head = head.Next()
+		list.Remove(head)
+	}
+	list.Head().Destroy()
+	list.Tail().Destroy()
+	list.size = 0
 }
