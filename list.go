@@ -53,6 +53,13 @@ func NewEmptyList() *List {
 	}
 }
 
+func NewListWithArray(array []int) *List {
+	list := NewEmptyList()
+	for _, v := range array {
+		list.
+	}
+}
+
 func (list *List) Head() *ListNode {
 	return list.head
 }
