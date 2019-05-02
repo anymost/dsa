@@ -24,14 +24,18 @@ func (node *ListNode) Data() int {
 }
 
 func (node *ListNode) InsertAsPrev (temp *ListNode) {
-	temp.prev = node.prev
+	prev := node.Prev()
+	temp.prev = prev
 	temp.next = node
+	prev.next = temp
 	node.prev = temp
 }
 
 func (node *ListNode) InsertAsNext(temp *ListNode) {
+	next := node.Next()
 	temp.prev = node
-	temp.next = node.next
+	temp.next = next
+	next.prev = temp
 	node.next = temp
 }
 
@@ -56,8 +60,13 @@ func NewEmptyList() *List {
 func NewListWithArray(array []int) *List {
 	list := NewEmptyList()
 	for _, v := range array {
-		list.
+		node := &ListNode{
+			val: v,
+		}
+		list.Tail().InsertAsPrev(node)
 	}
+	list.size = len(array)
+	return list
 }
 
 func (list *List) Head() *ListNode {

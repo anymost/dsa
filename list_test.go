@@ -11,3 +11,69 @@ func TestNewEmptyList(t *testing.T) {
 	assert.Equal(t, list.Tail().Prev(), list.Head())
 	assert.Equal(t, list.size,0)
 }
+
+func TestNewListWithArray(t *testing.T) {
+	array := []int{1, 2, 3, 4, 5}
+	list := NewListWithArray(array)
+	head := list.Head()
+	for i := 0; i < list.size; i++ {
+		head = head.Next()
+		assert.Equal(t, head.Data(), i+1)
+	}
+}
+
+func TestList_Head(t *testing.T) {
+	array := []int{1, 2, 3, 4, 5}
+	list := NewListWithArray(array)
+	assert.Equal(t, list.Head().Next().Data(), 1)
+}
+
+func TestList_Tail(t *testing.T) {
+	array := []int{1, 2, 3, 4, 5}
+	list := NewListWithArray(array)
+	assert.Equal(t, list.Tail().prev.Data(), 5)
+}
+
+func TestList_Get(t *testing.T) {
+	array := []int{1, 2, 3, 4, 5}
+	list := NewListWithArray(array)
+	head := list.Head().Next()
+	assert.Equal(t, head.Data(), 1)
+	head = head.Next()
+	assert.Equal(t, head.Data(), 2)
+	head = head.Next()
+	assert.Equal(t, head.Data(), 3)
+	head = head.Next()
+	assert.Equal(t, head.Data(), 4)
+	head = head.Next()
+	assert.Equal(t, head.Data(), 5)
+}
+
+func TestList_Find(t *testing.T) {
+	array := []int{1, 2, 3, 4, 5}
+	list := NewListWithArray(array)
+	assert.Equal(t, list.Find(0, 5, list.Tail()).Data(), 0)
+}
+
+func TestList_InsertBefore(t *testing.T) {
+	array := []int{5}
+	list := NewListWithArray(array)
+	list.InsertBefore(4, list.Tail())
+	assert.Equal(t, list.Tail().Prev().Data(), 4)
+}
+
+func TestList_InsertAfter(t *testing.T) {
+	array := []int{5}
+	list := NewListWithArray(array)
+	list.InsertAfter(list.Head(), 4)
+	assert.Equal(t, list.Head().Next().Data(), 4)
+}
+
+func TestList_Copy(t *testing.T) {
+	array := []int{5}
+	list1 := NewListWithArray(array)
+	array = []int{1, 2, 3, 4, 5}
+	list2 := NewListWithArray(array)
+	list2.Copy(list1.Head().Next(), 1)
+	assert.Equal(t, list2.Tail().Prev().Data(), 1)
+}
