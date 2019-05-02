@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/bmizerany/assert"
 	"testing"
 )
@@ -9,7 +10,7 @@ func TestNewEmptyList(t *testing.T) {
 	list := NewEmptyList()
 	assert.Equal(t, list.Head().Next(), list.Tail())
 	assert.Equal(t, list.Tail().Prev(), list.Head())
-	assert.Equal(t, list.size,0)
+	assert.Equal(t, list.size, 0)
 }
 
 func TestNewListWithArray(t *testing.T) {
@@ -52,7 +53,7 @@ func TestList_Get(t *testing.T) {
 func TestList_Find(t *testing.T) {
 	array := []int{1, 2, 3, 4, 5}
 	list := NewListWithArray(array)
-	assert.Equal(t, list.Find(0, 5, list.Tail()).Data(), 0)
+	assert.Equal(t, list.Find(1, 5, list.Tail()).Data(), 1)
 }
 
 func TestList_InsertBefore(t *testing.T) {
@@ -75,5 +76,41 @@ func TestList_Copy(t *testing.T) {
 	array = []int{1, 2, 3, 4, 5}
 	list2 := NewListWithArray(array)
 	list2.Copy(list1.Head().Next(), 1)
-	assert.Equal(t, list2.Tail().Prev().Data(), 1)
+	assert.Equal(t, list2.Tail().Prev().Data(), 5)
+}
+
+func TestList_Remove(t *testing.T) {
+	array := []int{1, 2, 3, 4, 5}
+	list := NewListWithArray(array)
+	list.Remove(list.Head().Next())
+	assert.Equal(t, list.Head().Next().Data(), 2)
+}
+
+func TestList_Deduplicate(t *testing.T) {
+	array := []int{1, 2, 3, 4, 4, 5}
+	list := NewListWithArray(array)
+	list.Deduplicate()
+	assert.Equal(t, list.ArrayData(), []int{1, 2, 3, 4, 5})
+}
+
+func TestList_Uniquify(t *testing.T) {
+	array := []int{1, 2, 3, 4, 4, 5}
+	list := NewListWithArray(array)
+	list.Uniquify()
+	assert.Equal(t, list.ArrayData(), []int{1, 2, 3, 4, 5})
+}
+
+func TestList_Search(t *testing.T) {
+	array := []int{1, 2, 3, 4, 5}
+	list := NewListWithArray(array)
+	assert.Equal(t, list.Search(1, 5, list.Tail()).Data(), 1)
+}
+
+func TestList_SelectionSort(t *testing.T) {
+	array := []int{5, 4, 3, 2, 1}
+	list := NewListWithArray(array)
+	list.SelectionSort()
+	list.Traverse(func(node *ListNode) {
+		fmt.Println(node.Data())
+	})
 }
