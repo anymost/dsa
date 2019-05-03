@@ -293,3 +293,123 @@ package main
 //	}
 //	return result
 //}
+
+//func search(nums []int, target int) int {
+//	low, hi := 0, len(nums)
+//	for low < hi {
+//		mi := (low + hi) >> 1
+//		if nums[mi] < target {
+//			low = mi + 1
+//		} else if target < nums[mi] {
+//			hi = mi
+//		} else {
+//			return mi
+//		}
+//	}
+//	return -1
+//}
+
+//func findLengthOfLCIS(nums []int) int {
+//	length := len(nums)
+//	if length == 0 {
+//		return 0
+//	}
+//	counts := make([]int, 0, 10)
+//	count := 1
+//	for i := 0; i < length-1; i++ {
+//		if nums[i] < nums[i+1] {
+//			count++
+//		} else {
+//			counts = append(counts, count)
+//			count = 1
+//		}
+//	}
+//	counts = append(counts, count)
+//	max := 1
+//	for _, val := range counts {
+//		if val > max {
+//			max = val
+//		}
+//	}
+//	return max
+//}
+//
+//type MyLinkedList struct {
+//	val []int
+//}
+//
+//
+///** Initialize your data structure here. */
+//func Constructor() MyLinkedList {
+//	return MyLinkedList{
+//		val: make([]int, 0),
+//	}
+//}
+//
+//
+///** Get the value of the index-th node in the linked list. If the index is invalid, return -1. */
+//func (this *MyLinkedList) Get(index int) int {
+//	if index < 0 || index >= len(this.val) || len(this.val) == 0 {
+//		return -1
+//	}
+//	return this.val[index]
+//}
+//
+//
+///** Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list. */
+//func (this *MyLinkedList) AddAtHead(val int)  {
+//	this.val = append([]int{val}, this.val...)
+//}
+//
+//
+///** Append a node of value val to the last element of the linked list. */
+//func (this *MyLinkedList) AddAtTail(val int)  {
+//	this.val = append(this.val, val)
+//}
+//
+//
+///** Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted. */
+//func (this *MyLinkedList) AddAtIndex(index int, val int)  {
+//	if index == -1 {
+//		index = 0
+//	}
+//	if index >= 0 && index <= len(this.val) {
+//		if index == len(this.val) {
+//			this.AddAtTail(val)
+//		} else {
+//			array := make([]int, 0)
+//			array = append(array, this.val...)
+//			array = append(array[0: index], val)
+//			this.val = append(array, this.val[index:]...)
+//		}
+//	}
+//}
+//
+//
+///** Delete the index-th node in the linked list, if the index is valid. */
+//func (this *MyLinkedList) DeleteAtIndex(index int)  {
+//	if index >= 0 && len(this.val) > index {
+//		this.val = append(this.val[0:index], this.val[index+1:]...)
+//	}
+//}
+
+//func match(wordList []string, words string) bool {
+//	for _, w := range wordList {
+//		if !strings.Contains(words, w) {
+//			return false
+//		}
+//	}
+//	return true
+//}
+//
+//func findWords(words []string) []string {
+//	array := []string{"qwertyuiop", "asdfghjkl", "zxcvbnm"}
+//	result := make([]string, 0)
+//	for _, word := range words {
+//		wordList := strings.Split(strings.ToLower(word), "")
+//		if match(wordList, array[0]) || match(wordList, array[1]) || match(wordList, array[2]) {
+//			result = append(result, word)
+//		}
+//	}
+//	return result
+//}

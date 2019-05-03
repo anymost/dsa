@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 type ListNode struct {
 	val  int
 	prev *ListNode
@@ -218,13 +216,23 @@ func (list *List) SelectionSort() {
 	head, last, size := list.Head().Next(), list.Tail(), list.size
 	for size > 1 {
 		max := list.SelectMax(head, size)
-		fmt.Println(max)
+		if head == max {
+			head = head.Next()
+		}
 		list.Remove(max)
-		fmt.Println(max)
 		last.InsertAsPrev(max)
-		fmt.Println(max)
 		last = max
-		fmt.Println(max)
 		size--
 	}
 }
+
+func (list *List) InsertionSort() {
+	current, head := list.Head().Next(), list.Head().Next()
+	for i := 0; i < list.size; i++ {
+		pos := list.Find(list.Get(i), i, head)
+		list.Remove(current)
+		pos.InsertAsNext(current)
+		head = head.Next()
+	}
+}
+
