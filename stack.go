@@ -1,6 +1,13 @@
 package main
 
-import "strings"
+// 卡特兰数： 栈混洗的总可能数为 (2n)! / [(n+1)!*n!]
+// 非法的栈混洗：如 1 < 2 < 3，如果出现 3, 1, 2
+
+// 中缀表达式：分操作符和操作栈两个部分
+// 列一张二维表来区分不同运算符之间的优先级
+
+// 逆波兰表达式 RPN：不适用括号来表示优先级的原酸关系
+// 逆波兰表达式的转换：如果是数字，直接续接；如果是操作符，如果栈顶操作符优先级大于当前操作符，则将栈顶操作符续接
 
 type Stack struct {
 	val []interface{}
@@ -30,6 +37,36 @@ func (stack *Stack) Push(val interface{}) {
 	stack.val = append(stack.val, val)
 }
 
+type Queue struct {
+	val []interface{}
+}
+
+func NewQueue() *Queue {
+	return &Queue{
+		val: make([]interface{}, 0),
+	}
+}
+
+func (queue *Queue) Enqueue(v interface{}) {
+	queue.val = append(queue.val, v)
+}
+
+func (queue *Queue) Dequeue() interface{} {
+	v := queue.val[0]
+	queue.val = queue.val[1:]
+	return v
+}
+
+func (queue *Queue) front() interface{} {
+	return queue.val[0]
+}
+
+func (queue *Queue) Empty() bool {
+	return len(queue.val) == 0
+}
+
+
+
 func Convert(n int, base int) string {
 	digit := []string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"}
 	stack := NewStack()
@@ -47,20 +84,20 @@ func Convert(n int, base int) string {
 	return s
 }
 
-func match(words []string) bool {
+func match(array []string) bool {
 	stack := NewStack()
-	for len(words) != 0 {
-		tail := words[len(words) - 1]
-		words = words[0: len(words) - 1]
-		switch tail {
+	for i := 0; i < len(array); i++ {
+		val := array[i]
+		switch val {
 		case "(", "[", "{":
-			stack.Push(tail)
+			stack.Push(val)
 		case ")", "]", "}":
-			top := stack.Pop()
-			if (top == "(" && tail == ")") ||
-				( top == "[" && tail == "]") ||
-				( top == "{" && tail == "}") {
-				continue
+			if stack.Empty() {
+				return false
+			} else if (stack.Top() == "(" && val == ")") ||
+				(stack.Top() == "[" && val == "]") ||
+				(stack.Top() == "{" && val == "}") {
+				stack.Pop()
 			} else {
 				return false
 			}
@@ -68,12 +105,10 @@ func match(words []string) bool {
 			continue
 		}
 	}
-	return true
+	return stack.Empty()
 }
 
-func main() {
-	words := "1+2+3+{[(1+1)+2]+3}"
-	v := match(strings.Split(words, ","))
-	println(v)
-}
+
+
+
 

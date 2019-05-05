@@ -1,5 +1,10 @@
 package main
 
+import (
+	"sort"
+	"strings"
+)
+
 //
 //import (
 //	"sort"
@@ -413,3 +418,37 @@ package main
 //	}
 //	return result
 //}
+
+
+
+func removeOuterParentheses(S string) string {
+	list := strings.Split(S, "")
+	stack := NewStack()
+	removeIndex := make([]int, 0)
+	type Item struct {
+		index int
+		val string
+	}
+	for i, v := range list {
+		if v == "(" {
+			stack.Push(&Item{
+				index: i,
+				val: v,
+			})
+		} else {
+			top := stack.Pop()
+			if !stack.Empty() {
+				removeIndex  = append(removeIndex, i)
+				if val, ok := top.(*Item); ok {
+					removeIndex = append(removeIndex, val.index)
+				}
+			}
+		}
+	}
+	sort.Ints(removeIndex)
+	for i := len(removeIndex) - 1; i > -1; i++ {
+		v := removeIndex[i]
+		list = append(list[0: v], list[v+1:]...)
+	}
+	return strings.Join(list, "")
+}
