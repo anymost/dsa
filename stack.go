@@ -37,36 +37,6 @@ func (stack *Stack) Push(val interface{}) {
 	stack.val = append(stack.val, val)
 }
 
-type Queue struct {
-	val []interface{}
-}
-
-func NewQueue() *Queue {
-	return &Queue{
-		val: make([]interface{}, 0),
-	}
-}
-
-func (queue *Queue) Enqueue(v interface{}) {
-	queue.val = append(queue.val, v)
-}
-
-func (queue *Queue) Dequeue() interface{} {
-	v := queue.val[0]
-	queue.val = queue.val[1:]
-	return v
-}
-
-func (queue *Queue) front() interface{} {
-	return queue.val[0]
-}
-
-func (queue *Queue) Empty() bool {
-	return len(queue.val) == 0
-}
-
-
-
 func Convert(n int, base int) string {
 	digit := []string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"}
 	stack := NewStack()
