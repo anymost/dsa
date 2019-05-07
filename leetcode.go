@@ -1,8 +1,8 @@
 package main
 
 import (
-	"sort"
-	"strings"
+	"fmt"
+	"regexp"
 )
 
 //
@@ -419,36 +419,242 @@ import (
 //	return result
 //}
 
+//
+//func removeOuterParentheses(S string) string {
+//	list := strings.Split(S, "")
+//	stack := NewStack()
+//	removeIndex := make([]int, 0)
+//	type Item struct {
+//		index int
+//		val string
+//	}
+//	for i, v := range list {
+//		if v == "(" {
+//			stack.Push(&Item{
+//				index: i,
+//				val: v,
+//			})
+//		} else {
+//			top := stack.Pop()
+//			if !stack.Empty() {
+//				removeIndex  = append(removeIndex, i)
+//				if val, ok := top.(*Item); ok {
+//					removeIndex = append(removeIndex, val.index)
+//				}
+//			}
+//		}
+//	}
+//	sort.Ints(removeIndex)
+//	for i := len(removeIndex) - 1; i > -1; i++ {
+//		v := removeIndex[i]
+//		list = append(list[0: v], list[v+1:]...)
+//	}
+//	return strings.Join(list, "")
+//}
 
+//func reverseWords(s string) string {
+//	list := strings.Split(s, " ")
+//
+//	for index, val := range list {
+//		wordList := strings.Split(val, "")
+//		length := len(wordList)
+//		for index := 0; index < length/2; index++ {
+//			if index < length/2 {
+//				wordList[index], wordList[length-1-index] = wordList[length-1-index], wordList[index]
+//			}
+//		}
+//		list[index] = strings.Join(wordList, "")
+//	}
+//	return strings.Join(list, " ")
+//}
 
-func removeOuterParentheses(S string) string {
-	list := strings.Split(S, "")
-	stack := NewStack()
-	removeIndex := make([]int, 0)
-	type Item struct {
-		index int
-		val string
+//func reverseString(s []byte) {
+//	length := len(s)
+//	for i := 0; i < length/2; i++ {
+//		s[i], s[length-1-i] = s[length-1-i], s[i]
+//	}
+//}
+//
+//func reverse(s []string) {
+//	length := len(s)
+//	for i := range s {
+//		if i < length/2 {
+//			s[i], s[length-1-i] = s[length-1-i], s[i]
+//		}
+//	}
+//}
+//
+//func reverseStr(s string, k int) string {
+//	length := len(s)
+//	if k == 1 {
+//		return s
+//	}
+//	list := strings.Split(s, "")
+//	if length <= k {
+//		reverse(list)
+//	} else {
+//		for i := 0; i < length; {
+//			if i+k > length {
+//				reverse(list[i : length-1])
+//			} else {
+//				reverse(list[i : i+k])
+//			}
+//			i += 2 * k
+//
+//		}
+//	}
+//	return strings.Join(list, "")
+//}
+
+//func thirdMax(nums []int) int {
+//	first, second, third := math.MinInt64, math.MinInt64, math.MinInt64
+//	for _, val := range nums {
+//		if val > third {
+//			if val > second {
+//				if val > first {
+//					third = second
+//					second = first
+//					first = val
+//				} else if val < first{
+//					third = second
+//					second = val
+//				}
+//			} else if val < second {
+//				third = val
+//			}
+//		}
+//	}
+//
+//	if  third == math.MinInt64 {
+//		return first
+//	} else {
+//		return third
+//	}
+//}
+//
+//func twoSum(numbers []int, target int) []int {
+//	for i, v1 := range numbers {
+//		for j, v2 := range numbers {
+//			if i != j && v1 + v2 == target {
+//				return []int{i, j}
+//			}
+//		}
+//	}
+//	return []int{}
+//}
+
+//func transpose(A [][]int) [][]int {
+//	externalLen, internalLen := len(A), len(A[0])
+//	matrix := make([][]int, internalLen)
+//	for i := range matrix {
+//		matrix[i] = make([]int, externalLen)
+//	}
+//	for i := 0; i < externalLen; i++ {
+//		for k := 0; k < internalLen; k++ {
+//			matrix[k][i] = A[i][k]
+//		}
+//	}
+//	return matrix
+//}
+//
+//func isToeplitzMatrix(matrix [][]int) bool {
+//	rowLen := len(matrix[0])
+//	sum := func(array []int) int {
+//		sum := 0
+//		for _, val := range array {
+//			sum += val
+//		}
+//		return sum
+//	}
+//	for i := 0; i < len(matrix)-1; i++ {
+//		prev := matrix[i]
+//		next := matrix[i+1]
+//		if sum(prev[0:rowLen-1]) != sum(next[1:]) {
+//			return false
+//		}
+//	}
+//	return true
+//}
+
+//func validMountainArray(A []int) bool {
+//	arrayLen := len(A)
+//	if arrayLen < 3 {
+//		return false
+//	}
+//	maxIndex, max := -1, -1
+//	for index, val := range A {
+//		if val > max {
+//			max, maxIndex = val, index
+//		}
+//	}
+//	if maxIndex == arrayLen-1 {
+//		return false
+//	}
+//	for i := 0; i < maxIndex-1; i++ {
+//		if A[i] >= A[i+1] {
+//			return false
+//		}
+//	}
+//	for i := maxIndex; i < arrayLen-1; i++ {
+//		if A[i] <= A[i+1] {
+//			return false
+//		}
+//	}
+//	return true
+//}
+
+func hasGroupsSizeX(deck []int) bool {
+	if len(deck) < 2 {
+		return false
 	}
-	for i, v := range list {
-		if v == "(" {
-			stack.Push(&Item{
-				index: i,
-				val: v,
-			})
+	countMap := make(map[int]int)
+	for _, v := range deck {
+		if val, isExit := countMap[v]; isExit {
+			countMap[v] = val + 1
 		} else {
-			top := stack.Pop()
-			if !stack.Empty() {
-				removeIndex  = append(removeIndex, i)
-				if val, ok := top.(*Item); ok {
-					removeIndex = append(removeIndex, val.index)
-				}
-			}
+			countMap[v] = 1
 		}
 	}
-	sort.Ints(removeIndex)
-	for i := len(removeIndex) - 1; i > -1; i++ {
-		v := removeIndex[i]
-		list = append(list[0: v], list[v+1:]...)
+	countList := make([]int, 0)
+	if len(countMap) < 2  {
+		return false
 	}
-	return strings.Join(list, "")
+	for _, v := range countMap {
+		if v == 1  {
+			return false
+		}
+		countList = append(countList, v)
+	}
+	if len(countList) == 1 {
+		return true
+	}
+	min := 1
+	commonChild := func(a int, b int) int {
+		for a != b {
+			if b < a {
+				a -= b
+			} else if a < b {
+				b -= a
+			}
+		}
+		return a
+	}
+	for i := 0; i < len(countList)-1; i++ {
+		min = commonChild(countList[i], countList[i+1])
+	}
+	if min == 1 {
+		return false
+	} else {
+		return true
+	}
+}
+
+func main() {
+	//val := hasGroupsSizeX([]int{1, 1, 1, 2, 2, 2, 3, 3})
+	//fmt.Println(val)
+	isMatch, _ := regexp.MatchString("^[a-z]+$", "abcdefg12343")
+	pattern, _ := regexp.Compile("^[a-z]+")
+	val := pattern.FindString("abcd123")
+	fmt.Println(val)
+	fmt.Println(isMatch)
 }
