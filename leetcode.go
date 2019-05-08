@@ -1,9 +1,6 @@
 package main
 
-import (
-	"fmt"
-	"regexp"
-)
+import "math"
 
 //
 //import (
@@ -603,58 +600,74 @@ import (
 //	return true
 //}
 
-func hasGroupsSizeX(deck []int) bool {
-	if len(deck) < 2 {
-		return false
-	}
-	countMap := make(map[int]int)
-	for _, v := range deck {
-		if val, isExit := countMap[v]; isExit {
-			countMap[v] = val + 1
-		} else {
-			countMap[v] = 1
+//func hasGroupsSizeX(deck []int) bool {
+//	if len(deck) < 2 {
+//		return false
+//	}
+//	countMap := make(map[int]int)
+//	for _, v := range deck {
+//		if val, isExit := countMap[v]; isExit {
+//			countMap[v] = val + 1
+//		} else {
+//			countMap[v] = 1
+//		}
+//	}
+//	countList := make([]int, 0)
+//	if len(countMap) < 2  {
+//		return false
+//	}
+//	for _, v := range countMap {
+//		if v == 1  {
+//			return false
+//		}
+//		countList = append(countList, v)
+//	}
+//	if len(countList) == 1 {
+//		return true
+//	}
+//	min := 1
+//	commonChild := func(a int, b int) int {
+//		for a != b {
+//			if b < a {
+//				a -= b
+//			} else if a < b {
+//				b -= a
+//			}
+//		}
+//		return a
+//	}
+//	for i := 0; i < len(countList)-1; i++ {
+//		min = commonChild(countList[i], countList[i+1])
+//	}
+//	if min == 1 {
+//		return false
+//	} else {
+//		return true
+//	}
+//}
+//
+//func main() {
+//	//val := hasGroupsSizeX([]int{1, 1, 1, 2, 2, 2, 3, 3})
+//	//fmt.Println(val)
+//	isMatch, _ := regexp.MatchString("^[a-z]+$", "abcdefg12343")
+//	pattern, _ := regexp.Compile("^[a-z]+")
+//	val := pattern.FindString("abcd123")
+//	fmt.Println(val)
+//	fmt.Println(isMatch)
+//}
+
+func flipAndInvertImage(A [][]int) [][]int {
+	for _, v := range A {
+		for i := 0; i < int(math.Ceil(float64(len(v)/2))); i++ {
+			v[i], v[len(v)-1] = v[len(v)-1], v[i]
 		}
-	}
-	countList := make([]int, 0)
-	if len(countMap) < 2  {
-		return false
-	}
-	for _, v := range countMap {
-		if v == 1  {
-			return false
-		}
-		countList = append(countList, v)
-	}
-	if len(countList) == 1 {
-		return true
-	}
-	min := 1
-	commonChild := func(a int, b int) int {
-		for a != b {
-			if b < a {
-				a -= b
-			} else if a < b {
-				b -= a
+		for i, k := range v {
+			if k == 0 {
+				v[i] = 1
+			} else {
+				v[i] = 0
 			}
 		}
-		return a
 	}
-	for i := 0; i < len(countList)-1; i++ {
-		min = commonChild(countList[i], countList[i+1])
-	}
-	if min == 1 {
-		return false
-	} else {
-		return true
-	}
-}
-
-func main() {
-	//val := hasGroupsSizeX([]int{1, 1, 1, 2, 2, 2, 3, 3})
-	//fmt.Println(val)
-	isMatch, _ := regexp.MatchString("^[a-z]+$", "abcdefg12343")
-	pattern, _ := regexp.Compile("^[a-z]+")
-	val := pattern.FindString("abcd123")
-	fmt.Println(val)
-	fmt.Println(isMatch)
+	return A
 }
