@@ -52,35 +52,17 @@ func (binNode *BinNode) TravelPost(callback func(node *BinNode)) {
 
 }
 
-func Traverse(node *BinNode, callback func(val int)) {
+func TraversePreOrder1(node *BinNode, callback func(val int)) {
 	if node == nil {
 		return
 	}
 	callback(node.data)
-	Traverse(node.leftChild, callback)
-	Traverse(node.rightChild, callback)
+	TraversePreOrder1(node.leftChild, callback)
+	TraversePreOrder1(node.rightChild, callback)
 }
 
 
-func TravelT1(node *BinNode, callback func(val int)) {
-	if node == nil {
-		return
-	}
-	stack := NewStack()
-	stack.Push(node)
-	for !stack.Empty() {
-		node = stack.Pop().(*BinNode)
-		callback(node.data)
-		if node.rightChild != nil {
-			stack.Push(node.rightChild)
-		}
-		if node.leftChild != nil {
-			stack.Push(node.leftChild)
-		}
-	}
-}
-
-func TravelT2(node *BinNode, callback func(val int)) {
+func TraversePreOrder2(node *BinNode, callback func(val int)) {
 	if node == nil {
 		return
 	}
@@ -95,6 +77,34 @@ func TravelT2(node *BinNode, callback func(val int)) {
 			break
 		}
 		node = stack.Pop().(*BinNode)
+	}
+}
+
+func TraverseMidOrder1(node *BinNode, callback func(val int)) {
+	if node == nil {
+		return
+	}
+	TraverseMidOrder1(node.leftChild, callback)
+	callback(node.data)
+	TraverseMidOrder1(node.rightChild, callback)
+}
+
+func TraverseMidOrder2(node *BinNode, callback func(val int)) {
+	if node == nil {
+		return
+	}
+	stack := NewStack()
+	for {
+		for node != nil {
+			stack.Push(node)
+			node = node.leftChild
+		}
+		if stack.Empty() {
+			break
+		}
+		node = stack.Pop().(*BinNode)
+		callback(node.data)
+		node = node.rightChild
 	}
 }
 
