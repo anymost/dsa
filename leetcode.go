@@ -1,6 +1,10 @@
 package main
 
-import "math"
+import (
+	"math"
+	"regexp"
+	"strings"
+)
 
 //
 //import (
@@ -655,19 +659,313 @@ import "math"
 //	fmt.Println(val)
 //	fmt.Println(isMatch)
 //}
+//
+//func flipAndInvertImage(A [][]int) [][]int {
+//	for _, v := range A {
+//		for i := 0; i < int(math.Ceil(float64(len(v)/2))); i++ {
+//			v[i], v[len(v)-1] = v[len(v)-1], v[i]
+//		}
+//		for i, k := range v {
+//			if k == 0 {
+//				v[i] = 1
+//			} else {
+//				v[i] = 0
+//			}
+//		}
+//	}
+//	return A
+//}
+//type TreeNode struct {
+//	Val   int
+//	Left  *TreeNode
+//	Right *TreeNode
+//}
+//
+//func maxDepth(root *TreeNode) int {
+//	if root == nil {
+//		return 0
+//	}
+//
+//	return 1 + int(math.Max(
+//		float64(maxDepth(root.Left)),
+//		float64(maxDepth(root.Right)),
+//	))
+//}
 
-func flipAndInvertImage(A [][]int) [][]int {
-	for _, v := range A {
-		for i := 0; i < int(math.Ceil(float64(len(v)/2))); i++ {
-			v[i], v[len(v)-1] = v[len(v)-1], v[i]
-		}
-		for i, k := range v {
-			if k == 0 {
-				v[i] = 1
-			} else {
-				v[i] = 0
-			}
-		}
+func titleToNumber(s string) int {
+	words := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	wordList := strings.Split(words, "")
+	wordMap := make(map[string]int, 26)
+	for index, value := range wordList {
+		wordMap[value] = index + 1
 	}
-	return A
+	sList := strings.Split(s, "")
+	sum := 0
+	for i := len(sList) - 1; i > -1; i-- {
+		base := int(math.Pow(float64(26), float64(len(sList)-1-i)))
+		sum += base * wordMap[sList[i]]
+	}
+	return sum
 }
+
+//func convertToTitle(n int) string {
+//	words := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+//	wordList := strings.Split(words, "")
+//	wordMap := make(map[int]string, 26)
+//	for index, value := range wordList {
+//		wordMap[index+1] = value
+//	}
+//
+//}
+
+//func backspaceCompare(S string, T string) bool {
+//	var (
+//		a []string
+//		b []string
+//	)
+//	for _, val := range strings.Split(S, "") {
+//		if val == "#" {
+//			if len(a) > 0 {
+//				a = a[0 : len(a)-1]
+//			}
+//		} else {
+//			a = append(a, val)
+//		}
+//	}
+//	for _, val := range strings.Split(T, "") {
+//		if val == "#" {
+//			if len(b) > 0 {
+//				b = b[0 : len(b)-1]
+//			}
+//		} else {
+//			b = append(b, val)
+//		}
+//	}
+//	return strings.Join(a, "") == strings.Join(b, "")
+//}
+
+//func calPoints(ops []string) int {
+//	stack := make([]int, 0)
+//	sum := 0
+//	for _, val := range ops {
+//		switch val {
+//		case "+":
+//			length := len(stack)
+//			if length > 1 {
+//				tail := stack[length-2] + stack[length-1]
+//				stack = append(stack, tail)
+//			}
+//		case "D":
+//			length := len(stack)
+//			if length > 0 {
+//				tail := stack[length-1] << 1
+//				stack = append(stack, tail)
+//			}
+//		case "C":
+//			length := len(stack)
+//			if length > 0 {
+//				stack = stack[0 : length-1]
+//			}
+//		default:
+//			numVal, _ := strconv.Atoi(val)
+//			stack = append(stack, numVal)
+//		}
+//	}
+//	for _, val := range stack {
+//		sum += val
+//	}
+//	return sum
+//}
+
+//func find(val int, array []int) int {
+//	for index, item := range array {
+//		if val == item {
+//			return index
+//		}
+//	}
+//	return -1
+//}
+//
+//func findMaxIndex(value int, index int, array []int) int {
+//	for i := index + 1; i < len(array); i++ {
+//		if array[i] > value {
+//			return array[i]
+//		}
+//	}
+//	return -1
+//}
+//
+//func nextGreaterElement(nums1 []int, nums2 []int) []int {
+//	var result []int
+//	nums2Len := len(nums2)
+//	for _, a := range nums1 {
+//		index := find(a, nums2)
+//		if index == nums2Len-1 {
+//			result = append(result, -1)
+//		} else {
+//			maxIndex := findMaxIndex(a, index, nums2)
+//			result = append(result, maxIndex)
+//		}
+//	}
+//	return result
+//}
+//
+//type MinStack struct {
+//	array []int
+//	min   int
+//}
+//
+///** initialize your data structure here. */
+//func Constructor() MinStack {
+//	return MinStack{
+//		array: make([]int, 0),
+//		min:   math.MaxInt32,
+//	}
+//}
+//
+//func (this *MinStack) SetMin() {
+//	this.min = math.MaxInt32
+//	for _, val := range this.array {
+//		if val < this.min {
+//			this.min = val
+//		}
+//	}
+//}
+//
+//func (this *MinStack) Push(x int) {
+//	this.array = append(this.array, x)
+//	this.SetMin()
+//}
+//
+//func (this *MinStack) Pop() {
+//	this.array = this.array[0 : len(this.array)-1]
+//	this.SetMin()
+//}
+//
+//func (this *MinStack) Top() int {
+//	return this.array[len(this.array)-1]
+//}
+//
+//func (this *MinStack) GetMin() int {
+//	return this.min
+//}
+
+//func isAnagram(s string, t string) bool {
+//	sList := strings.Split(s, "")
+//	sort.Strings(sList)
+//	tList := strings.Split(t, "")
+//	sort.Strings(tList)
+//	return strings.Join(sList, "") == strings.Join(tList, "")
+//}
+
+//func includes(nums []int, val int) bool {
+//	for _, item := range nums {
+//		if val == item {
+//			return true
+//		}
+//	}
+//	return false
+//}
+//
+//func intersect(nums1 []int, nums2 []int) []int {
+//	sort.Ints(nums1)
+//	sort.Ints(nums2)
+//	result := make([]int, 0)
+//	for len(nums1) != 0 && len(nums2) != 0 {
+//		if nums1[0] == nums2[0] {
+//			result = append(result, nums1[0])
+//			nums1 = nums1[1:]
+//			nums2 = nums2[1:]
+//		} else {
+//			if includes(nums1, nums2[0]) {
+//				nums1= nums1[1:]
+//			} else {
+//				nums2 = nums2[1:]
+//			}
+//		}
+//	}
+//	return result
+//}
+//
+//func main() {
+//	val := intersect([]int{1,2,2,1}, []int{2,2})
+//	fmt.Println(val)
+//}
+
+
+
+//func isPerfectSquare(num int) bool {
+//	if num == 1 {
+//		return true
+//	}
+//	low, hi := 0, num
+//	for  low < hi {
+//		mi := (low + hi) >> 1
+//		if mi * mi < num {
+//			low = mi + 1
+//		} else if num < mi * mi {
+//			hi = mi
+//		} else {
+//			return true
+//		}
+//	}
+//	return false
+//}
+//
+//func isLeftSmaller(array []int, index int) bool {
+//	for i := 0; i < index; i++ {
+//		if array[i] >= array[i+1] {
+//			return false
+//		}
+//	}
+//	return true
+//}
+//func isRightLarger(array []int, index int) bool {
+//	for i := index; i < len(array) - 1; i++ {
+//		if array[i] <= array[i+1] {
+//			return false
+//		}
+//	}
+//	return true
+//}
+//
+//
+//func peakIndexInMountainArray(A []int) int {
+//	length := len(A)
+//	if length < 3 {
+//		return -1
+//	}
+//	for index, _ := range A {
+//		if index > 0 && index < length - 1 {
+//			if isLeftSmaller(A, index) && isRightLarger(A, index) {
+//				return index
+//			}
+//		}
+//	}
+//	return -1
+//}
+//
+//func majorityElement(nums []int) int {
+//	count := make(map[int]int, 0)
+//	for _, val := range nums {
+//		if time, isOk := count[val]; isOk {
+//			count[val] = time + 1
+//			if time == len(nums) / 2 {
+//				return val
+//			}
+//		} else {
+//			count[val] = 1
+//		}
+//	}
+//	return -1
+//}
+//
+//func reverseList(head *ListNode) *ListNode {
+//}
+
+//func isPalindrome(s string) bool {
+//	result := ""
+//	for _, v := range string.toLows {
+//		if regexp.MatchString("^$")
+//	}
+//}

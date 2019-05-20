@@ -61,16 +61,16 @@ func Traverse(node *BinNode, callback func(val int)) {
 	Traverse(node.rightChild, callback)
 }
 
-func TraverseT1(node *BinNode, callback func(val int)) {
+
+func TravelT1(node *BinNode, callback func(val int)) {
 	if node == nil {
 		return
 	}
 	stack := NewStack()
 	stack.Push(node)
 	for !stack.Empty() {
-		node, _ = stack.Pop().(*BinNode)
+		node = stack.Pop().(*BinNode)
 		callback(node.data)
-		// 先右后左
 		if node.rightChild != nil {
 			stack.Push(node.rightChild)
 		}
@@ -79,3 +79,22 @@ func TraverseT1(node *BinNode, callback func(val int)) {
 		}
 	}
 }
+
+func TravelT2(node *BinNode, callback func(val int)) {
+	if node == nil {
+		return
+	}
+	stack := NewStack()
+	for {
+		for node != nil {
+			callback(node.data)
+			stack.Push(node.rightChild)
+			node = node.leftChild
+		}
+		if stack.Empty() {
+			break
+		}
+		node = stack.Pop().(*BinNode)
+	}
+}
+
