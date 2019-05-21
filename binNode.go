@@ -108,3 +108,27 @@ func TraverseMidOrder2(node *BinNode, callback func(val int)) {
 	}
 }
 
+func visitAlongLeft(node *BinNode, stack *Stack) {
+	if node != nil {
+		stack.Push(node)
+		node = node.leftChild
+	}
+}
+
+func TraversePostOrder2(node *BinNode, callback func(val int)) {
+	if node == nil {
+		return
+	}
+	stack := NewStack()
+	for {
+		visitAlongLeft(node, stack)
+		if stack.Empty() {
+			break
+		}
+		node = stack.Pop().(*BinNode)
+		if node.rightChild != nil {
+			visitAlongLeft(node.rightChild, stack)
+		}
+	}
+}
+
