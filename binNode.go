@@ -62,6 +62,16 @@ func TraversePreOrder1(node *BinNode, callback func(val int)) {
 }
 
 
+func TraverseMidOrder1(node *BinNode, callback func(val int)) {
+	if node == nil {
+		return
+	}
+	TraverseMidOrder1(node.leftChild, callback)
+	callback(node.data)
+	TraverseMidOrder1(node.rightChild, callback)
+}
+
+
 func TraversePreOrder2(node *BinNode, callback func(val int)) {
 	if node == nil {
 		return
@@ -80,14 +90,6 @@ func TraversePreOrder2(node *BinNode, callback func(val int)) {
 	}
 }
 
-func TraverseMidOrder1(node *BinNode, callback func(val int)) {
-	if node == nil {
-		return
-	}
-	TraverseMidOrder1(node.leftChild, callback)
-	callback(node.data)
-	TraverseMidOrder1(node.rightChild, callback)
-}
 
 func TraverseMidOrder2(node *BinNode, callback func(val int)) {
 	if node == nil {
@@ -108,27 +110,22 @@ func TraverseMidOrder2(node *BinNode, callback func(val int)) {
 	}
 }
 
-func visitAlongLeft(node *BinNode, stack *Stack) {
-	if node != nil {
-		stack.Push(node)
-		node = node.leftChild
-	}
-}
-
-func TraversePostOrder2(node *BinNode, callback func(val int)) {
+func TraverseLevel(node *BinNode, callback func(val int)) {
 	if node == nil {
 		return
 	}
-	stack := NewStack()
-	for {
-		visitAlongLeft(node, stack)
-		if stack.Empty() {
-			break
+	queue := NewQueue()
+	queue.Enqueue(node)
+	for !queue.Empty() {
+		node := queue.Dequeue().(*BinNode)
+		callback(node.data)
+		if node.leftChild != nil {
+			queue.Enqueue(node.leftChild)
 		}
-		node = stack.Pop().(*BinNode)
 		if node.rightChild != nil {
-			visitAlongLeft(node.rightChild, stack)
+			queue.Enqueue(node.rightChild)
 		}
 	}
 }
+
 
