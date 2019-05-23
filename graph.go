@@ -67,3 +67,11 @@ func NewGraphMatrix() *GraphMatrix {
 		edge:   make([][]Edge, 0),
 	}
 }
+
+func (vertext *Vertex) exist(i int, j int) bool {
+	return
+}
+
+func (vertex *Vertex) NextNbr(i int, j int) int {
+for j != -1
+}
