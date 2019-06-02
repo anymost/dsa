@@ -1,8 +1,8 @@
 package main
 
 import (
+	"fmt"
 	"math"
-	"regexp"
 	"strings"
 )
 
@@ -250,7 +250,7 @@ import (
 //	value []int
 //}
 //
-///** Initialize your data structure here. */
+///** Initialize your Data structure here. */
 //func Constructor() MyHashMap {
 //	value := make([]int, 1000000)
 //	for index := range value {
@@ -345,7 +345,7 @@ import (
 //}
 //
 //
-///** Initialize your data structure here. */
+///** Initialize your Data structure here. */
 //func Constructor() MyLinkedList {
 //	return MyLinkedList{
 //		val: make([]int, 0),
@@ -815,7 +815,7 @@ func titleToNumber(s string) int {
 //	min   int
 //}
 //
-///** initialize your data structure here. */
+///** initialize your Data structure here. */
 //func Constructor() MinStack {
 //	return MinStack{
 //		array: make([]int, 0),
@@ -892,8 +892,6 @@ func titleToNumber(s string) int {
 //	fmt.Println(val)
 //}
 
-
-
 //func isPerfectSquare(num int) bool {
 //	if num == 1 {
 //		return true
@@ -969,3 +967,129 @@ func titleToNumber(s string) int {
 //		if regexp.MatchString("^$")
 //	}
 //}
+//
+//func unique(val string) []string {
+//	stringMap := make(map[string]int)
+//	stringList := strings.Split(val, "")
+//	for _, item  := range stringList {
+//		stringMap[item] = 1
+//	}
+//	i, list := 0,make([]string, len(stringMap))
+//	for key := range stringMap {
+//		list[i] = key
+//		i++
+//	}
+//	return list
+//}
+//
+//func minCount(list []int) int {
+//	min := list[0]
+//	for _, val := range list {
+//		if val < min {
+//			min = val
+//		}
+//	}
+//	return min
+//}
+//
+//func commonChars(A []string) []string {
+//	result := make([]string, 0)
+//	if len(A) == 0 {
+//		return result
+//	}
+//	words := unique(A[0])
+//
+//	for _, val := range words {
+//		count := make([]int, len(A))
+//		for index, str := range A {
+//			count[index] = strings.Count(str, val)
+//		}
+//		min := minCount(count)
+//		if min > 0 {
+//			for i := 0; i < min; i++ {
+//				result = append(result, val)
+//			}
+//		}
+//	}
+//	return result
+//}
+
+//func binaryGap(N int) int {
+//	stack := make([]int, 0)
+//	for N != 0 {
+//		temp := N % 2
+//		stack = append(stack, temp)
+//		N = N / 2
+//	}
+//	max := 0
+//	lastI := len(stack) - 1
+//	for i := lastI; i > -1; i-- {
+//		if stack[i] == 1 {
+//			temp := lastI - i
+//			if temp > max {
+//				max = temp
+//			}
+//			lastI = i
+//		}
+//	}
+//	return max
+//}
+
+//  Definition for a binary tree node.
+//type TreeNode struct {
+//	Val   int
+//	Left  *TreeNode
+//	Right *TreeNode
+//}
+//
+//type IntQueue struct {
+//	Data []*TreeNode
+//}
+//
+//func NewIntQueue() *IntQueue {
+//	return &IntQueue{
+//		Data: make([]*TreeNode, 0),
+//	}
+//}
+//
+//func (queue *IntQueue) Enqueue(val *TreeNode) {
+//	queue.Data = append(queue.Data, val)
+//}
+//
+//func (queue *IntQueue) Dequeue() *TreeNode {
+//	first := queue.Data[0]
+//	queue.Data = queue.Data[1:]
+//	return first
+//}
+//
+//func (queue *IntQueue) Empty() bool {
+//	return len(queue.Data) == 0
+//}
+//
+//func levelOrderBottom(root *TreeNode) [][]int {
+//	result := make([][]int, 0)
+//	if root == nil {
+//		return result
+//	}
+//	queue := NewIntQueue()
+//	queue.Enqueue(root)
+//	temp := make([]int, 0)
+//	for !queue.Empty() {
+//		node := queue.Dequeue()
+//
+//	}
+//	return result
+//}
+
+func numUniqueEmails(emails []string) int {
+	uniqueEmails := make(map[string]bool)
+	for _, email := range emails {
+		emailList := strings.Split(email,"@")
+		host := emailList[1]
+		local := strings.Split(emailList[0], "+")[0]
+		local = strings.Join(strings.Split(local, "."), "")
+		result := fmt.Sprintf("%s@%s", local, host)
+		uniqueEmails[result] = true
+	}
+	return len(uniqueEmails)
+}

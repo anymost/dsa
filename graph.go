@@ -20,58 +20,115 @@ const (
 )
 
 type Vertex struct {
-	data      int
-	status    VStatus
-	inDegree  int
-	outDegree int
-	dTime     int
-	fTime     int
-	parent    int
-	priority  int
+	Data      int
+	Status    VStatus
+	InDegree  int
+	OutDegree int
+	DTime     int
+	FTime     int
+	Parent    int
+	Priority  int
 }
 
 type Edge struct {
-	data   int
-	weight int
-	status EStatus
+	Data   int
+	Weight int
+	Status EStatus
 }
 
 type GraphMatrix struct {
-	vertex []Vertex
-	edge   [][]Edge
+	Vertex []*Vertex
+	Edge   [][]*Edge
 }
 
 func NewVertex(data int) *Vertex {
 	return &Vertex{
-		data:      data,
-		inDegree:  0,
-		outDegree: 0,
-		status:    UNDISCOVERED,
-		parent:    -1,
-		fTime:     math.MaxInt32,
-		dTime:     math.MaxInt32,
+		Data:      data,
+		InDegree:  0,
+		OutDegree: 0,
+		Status:    UNDISCOVERED,
+		Parent:    -1,
+		FTime:     math.MaxInt32,
+		DTime:     math.MaxInt32,
 	}
 }
 
 func NewEdge(data int, weight int) *Edge {
 	return &Edge{
-		data:   data,
-		weight: weight,
-		status: UNDETERMINED,
+		Data:   data,
+		Weight: weight,
+		Status: UNDETERMINED,
 	}
 }
 
 func NewGraphMatrix() *GraphMatrix {
 	return &GraphMatrix{
-		vertex: make([]Vertex, 0),
-		edge:   make([][]Edge, 0),
+		Vertex: make([]*Vertex, 0),
+		Edge:   make([][]*Edge, 0),
 	}
 }
 
-func (vertext *Vertex) exist(i int, j int) bool {
-	return
+func (graph *GraphMatrix) IsExistEdge(i, j int) bool {
+	if 0 <= i && i < len(graph.Vertex) && 0 <= j && j < len(graph.Vertex) {
+		return graph.Edge[i][j] != nil
+	}
+	return false
 }
 
-func (vertex *Vertex) NextNbr(i int, j int) int {
-for j != -1
+func (graph *GraphMatrix) NextNeighbor(i, j int) int {
+	for -1 < j {
+		j -= 1
+		if graph.IsExistEdge(i, j) {
+			return j
+		}
+	}
+	return -1
+}
+
+func (graph *GraphMatrix) FirstNeighbor(i int) int {
+	return graph.NextNeighbor(i, len(graph.Edge[i]))
+}
+
+func (graph *GraphMatrix) InsertEdge(i, j int, edge *Edge) {
+	graph.Edge[i][j] = edge
+	graph.Vertex[i].InDegree++
+	graph.Vertex[j].InDegree++
+}
+
+func (graph *GraphMatrix) RemoveEdge(i, j int) *Edge {
+	target := graph.Edge[i][j]
+	oldEdge := &Edge{
+		Data:   target.Data,
+		Status: target.Status,
+		Weight: target.Weight,
+	}
+	graph.Edge[i][j] = nil
+	graph.Vertex[i].InDegree--
+	graph.Vertex[j].InDegree++
+	return oldEdge
+}
+
+func (graph *GraphMatrix) InsertVertex(v *Vertex) {
+	for i := 0; i < len(graph.Edge); i++ {
+		graph.Edge[i] = append(graph.Edge[i], nil)
+	}
+	newEdges := make([]*Edge, len(graph.Vertex)+1)
+	graph.Vertex = append(graph.Vertex, v)
+	graph.Edge = append(graph.Edge, newEdges)
+}
+
+func (graph *GraphMatrix) removeVertex(i int) {
+	newVertex := make([]*Vertex, len(graph.Vertex)-1)
+	for k := 0; k < i; k++ {
+		newVertex[k] = graph.Vertex[k]
+	}
+	for k := i + 1; k < len(graph.Vertex); k++ {
+		newVertex[k-1] = graph.Vertex[k]
+	}
+	graph.Vertex = newVertex
+
+	for i := 0; i < len(graph.Edge); i++ {
+		graph.Edge[i] = graph.Edge[i][0 : len(graph.Edge)-1]
+	}
+	graph.Edge = graph.Edge[0 : len(graph.Edge)-1]
 }
