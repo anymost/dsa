@@ -132,3 +132,30 @@ func (graph *GraphMatrix) removeVertex(i int) {
 	}
 	graph.Edge = graph.Edge[0 : len(graph.Edge)-1]
 }
+
+
+func (graph *GraphMatrix) BFS(v, clock int, visitor func(v int)) {
+	queue := NewQueue()
+	graph.Vertex[v].Status = DISCOVERED
+	queue.Enqueue(v)
+	for !queue.Empty() {
+		v := queue.Dequeue().(int)
+		vertex := graph.Vertex[v]
+		clock++
+		vertex.DTime = clock
+		visitor(v)
+		for i := graph.FirstNeighbor(v); -1 < i; i = graph.NextNeighbor(v, i) {
+			vertex := graph.Vertex[i]
+			edge := graph.Edge[v][i]
+			if vertex.Status == UNDISCOVERED {
+				vertex.Status = DISCOVERED
+				queue.Enqueue(i)
+				edge.Status = TREE
+				vertex.Parent = v
+			} else {
+				edge.Status = CROSS
+			}
+		}
+		vertex.Status = VISITED
+	}
+}
