@@ -77,7 +77,7 @@ func (graph *GraphMatrix) IsExistEdge(i, j int) bool {
 
 func (graph *GraphMatrix) NextNeighbor(i, j int) int {
 	for -1 < j {
-		j -= 1
+		j--
 		if graph.IsExistEdge(i, j) {
 			return j
 		}
@@ -95,17 +95,10 @@ func (graph *GraphMatrix) InsertEdge(i, j int, edge *Edge) {
 	graph.Vertex[j].InDegree++
 }
 
-func (graph *GraphMatrix) RemoveEdge(i, j int) *Edge {
-	target := graph.Edge[i][j]
-	oldEdge := &Edge{
-		Data:   target.Data,
-		Status: target.Status,
-		Weight: target.Weight,
-	}
+func (graph *GraphMatrix) RemoveEdge(i, j int) {
 	graph.Edge[i][j] = nil
 	graph.Vertex[i].InDegree--
 	graph.Vertex[j].InDegree++
-	return oldEdge
 }
 
 func (graph *GraphMatrix) InsertVertex(v *Vertex) {
@@ -133,17 +126,16 @@ func (graph *GraphMatrix) removeVertex(i int) {
 	graph.Edge = graph.Edge[0 : len(graph.Edge)-1]
 }
 
-
-func (graph *GraphMatrix) BFS(v, clock int, visitor func(v int)) {
+func (graph *GraphMatrix) BFS(v int, clock *int, visitor func(v int)) {
 	queue := NewQueue()
 	graph.Vertex[v].Status = DISCOVERED
 	queue.Enqueue(v)
 	for !queue.Empty() {
 		v := queue.Dequeue().(int)
 		vertex := graph.Vertex[v]
-		clock++
-		vertex.DTime = clock
-		visitor(v)
+		*clock++
+		vertex.DTime = *clock
+		visitor(vertex.Data)
 		for i := graph.FirstNeighbor(v); -1 < i; i = graph.NextNeighbor(v, i) {
 			vertex := graph.Vertex[i]
 			edge := graph.Edge[v][i]
@@ -158,4 +150,35 @@ func (graph *GraphMatrix) BFS(v, clock int, visitor func(v int)) {
 		}
 		vertex.Status = VISITED
 	}
+}
+
+func (graph *GraphMatrix) DFS(v int, clock *int, visitor func(v int)) {
+	vertex := graph.Vertex[v]
+	*clock++
+	vertex.DTime = *clock
+	vertex.Status = DISCOVERED
+	for i := graph.FirstNeighbor(v); -1 < i; i = graph.NextNeighbor(v, i) {
+		status := graph.Vertex[i].Status
+		switch status {
+		case UNDISCOVERED:
+			graph.Edge[v][i].Status = TREE
+			graph.Vertex[i].Status = DISCOVERED
+			graph.Vertex[i].Parent = v
+			graph.DFS(i, clock, visitor)
+		case DISCOVERED:
+			graph.Edge[v][i].Status = BACKWARD
+		default:
+			vDTime := graph.Vertex[v].DTime
+			iDTime := graph.Vertex[i].DTime
+			if vDTime < iDTime {
+				graph.Edge[v][i].Status = FORWARD
+			} else {
+				graph.Edge[v][i].Status = CROSS
+			}
+		}
+	}
+	visitor(vertex.Data)
+	vertex.Status = VISITED
+	*clock++
+	vertex.FTime = *clock
 }
