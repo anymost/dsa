@@ -1,7 +1,5 @@
 package main
 
-import "math"
-
 type VStatus int
 type EStatus int
 
@@ -48,8 +46,8 @@ func NewVertex(data int) *Vertex {
 		OutDegree: 0,
 		Status:    UNDISCOVERED,
 		Parent:    -1,
-		FTime:     math.MaxInt32,
-		DTime:     math.MaxInt32,
+		FTime:     0,
+		DTime:     0,
 	}
 }
 
@@ -91,13 +89,13 @@ func (graph *GraphMatrix) FirstNeighbor(i int) int {
 
 func (graph *GraphMatrix) InsertEdge(i, j int, edge *Edge) {
 	graph.Edge[i][j] = edge
-	graph.Vertex[i].InDegree++
+	graph.Vertex[i].OutDegree++
 	graph.Vertex[j].InDegree++
 }
 
 func (graph *GraphMatrix) RemoveEdge(i, j int) {
 	graph.Edge[i][j] = nil
-	graph.Vertex[i].InDegree--
+	graph.Vertex[i].OutDegree--
 	graph.Vertex[j].InDegree++
 }
 
@@ -110,7 +108,7 @@ func (graph *GraphMatrix) InsertVertex(v *Vertex) {
 	graph.Edge = append(graph.Edge, newEdges)
 }
 
-func (graph *GraphMatrix) removeVertex(i int) {
+func (graph *GraphMatrix) RemoveVertex(i int) {
 	newVertex := make([]*Vertex, len(graph.Vertex)-1)
 	for k := 0; k < i; k++ {
 		newVertex[k] = graph.Vertex[k]
@@ -126,24 +124,24 @@ func (graph *GraphMatrix) removeVertex(i int) {
 	graph.Edge = graph.Edge[0 : len(graph.Edge)-1]
 }
 
-func (graph *GraphMatrix) BFS(v int, clock *int, visitor func(v int)) {
+func (graph *GraphMatrix) BFS(v int, clock *int, visitor func(v *Vertex)) {
 	queue := NewQueue()
-	graph.Vertex[v].Status = DISCOVERED
 	queue.Enqueue(v)
+	graph.Vertex[v].Status = DISCOVERED
 	for !queue.Empty() {
-		v := queue.Dequeue().(int)
+		v = queue.Dequeue().(int)
 		vertex := graph.Vertex[v]
 		*clock++
 		vertex.DTime = *clock
-		visitor(vertex.Data)
+		visitor(vertex)
 		for i := graph.FirstNeighbor(v); -1 < i; i = graph.NextNeighbor(v, i) {
 			vertex := graph.Vertex[i]
 			edge := graph.Edge[v][i]
 			if vertex.Status == UNDISCOVERED {
+				vertex.Parent = v
+				edge.Status = TREE
 				vertex.Status = DISCOVERED
 				queue.Enqueue(i)
-				edge.Status = TREE
-				vertex.Parent = v
 			} else {
 				edge.Status = CROSS
 			}
@@ -182,3 +180,4 @@ func (graph *GraphMatrix) DFS(v int, clock *int, visitor func(v int)) {
 	*clock++
 	vertex.FTime = *clock
 }
+
