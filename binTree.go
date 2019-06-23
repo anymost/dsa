@@ -33,9 +33,9 @@ func (binTree *BinTree) UpdateHeight(node *BinNode) int {
 	return node.Height
 }
 
-func (binTree *BinTree) UpdateHeightAbove(node *BinNode) {
+func (BinTree *BinTree) UpdateHeightAbove(node *BinNode) {
 	for node != nil {
-		binTree.UpdateHeight(node)
+		BinTree.UpdateHeight(node)
 		node = node.Parent
 	}
 }
@@ -52,6 +52,10 @@ func (binTree *BinTree) InsertAsRight(node *BinNode, val int) *BinNode {
 	node.InsertAsRight(val)
 	binTree.UpdateHeightAbove(node)
 	return node.RightChild
+}
+
+func (binTree *BinTree) RemoveAt(node *BinNode) {
+
 }
 
 func structure(p *BinNode) int {
