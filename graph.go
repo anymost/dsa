@@ -164,11 +164,13 @@ func (graph *GraphMatrix) DFS(v int, clock *int, visitor func(v int)) {
 			graph.Vertex[i].Parent = v
 			graph.DFS(i, clock, visitor)
 		case DISCOVERED:
+				// 后向边 由子节点指向父节点
 			graph.Edge[v][i].Status = BACKWARD
 		default:
 			vDTime := graph.Vertex[v].DTime
 			iDTime := graph.Vertex[i].DTime
 			if vDTime < iDTime {
+				// 前向边 由父节点指向子节点
 				graph.Edge[v][i].Status = FORWARD
 			} else {
 				graph.Edge[v][i].Status = CROSS

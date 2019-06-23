@@ -1,36 +1,36 @@
 package main
 
 type BinNode struct {
-	parent, leftChild, rightChild *BinNode
-	data                          int
-	height                        int
+	Parent, LeftChild, RightChild *BinNode
+	Data                          int
+	Height                        int
 }
 
 func (binNode *BinNode) Size() int {
 	size := 1
-	if binNode.leftChild != nil {
-		size += binNode.leftChild.Size()
+	if binNode.LeftChild != nil {
+		size += binNode.LeftChild.Size()
 	}
-	if binNode.rightChild != nil {
-		size += binNode.rightChild.Size()
+	if binNode.RightChild != nil {
+		size += binNode.RightChild.Size()
 	}
 	return size
 }
 
 func (binNode *BinNode) InsertAsLeft(val int) *BinNode {
-	binNode.leftChild = &BinNode{
-		parent: binNode,
-		data:   val,
+	binNode.LeftChild = &BinNode{
+		Parent: binNode,
+		Data:   val,
 	}
-	return binNode.leftChild
+	return binNode.LeftChild
 }
 
 func (binNode *BinNode) InsertAsRight(val int) *BinNode {
-	binNode.rightChild = &BinNode{
-		parent: binNode,
-		data:   val,
+	binNode.RightChild = &BinNode{
+		Parent: binNode,
+		Data:   val,
 	}
-	return binNode.rightChild
+	return binNode.RightChild
 }
 
 func (binNode *BinNode) Succ() *BinNode {
@@ -56,9 +56,9 @@ func TraversePreOrder1(node *BinNode, callback func(val int)) {
 	if node == nil {
 		return
 	}
-	callback(node.data)
-	TraversePreOrder1(node.leftChild, callback)
-	TraversePreOrder1(node.rightChild, callback)
+	callback(node.Data)
+	TraversePreOrder1(node.LeftChild, callback)
+	TraversePreOrder1(node.RightChild, callback)
 }
 
 
@@ -66,9 +66,9 @@ func TraverseMidOrder1(node *BinNode, callback func(val int)) {
 	if node == nil {
 		return
 	}
-	TraverseMidOrder1(node.leftChild, callback)
-	callback(node.data)
-	TraverseMidOrder1(node.rightChild, callback)
+	TraverseMidOrder1(node.LeftChild, callback)
+	callback(node.Data)
+	TraverseMidOrder1(node.RightChild, callback)
 }
 
 func TraversePreOrder(node *BinNode, visitor func(val int)) {
@@ -78,9 +78,9 @@ func TraversePreOrder(node *BinNode, visitor func(val int)) {
 	stack := NewStack()
 	for {
 		for node != nil {
-			visitor(node.data)
-			stack.Push(node.rightChild)
-			node = node.leftChild
+			visitor(node.Data)
+			stack.Push(node.RightChild)
+			node = node.LeftChild
 		}
 		if stack.Empty() {
 			break
@@ -97,14 +97,14 @@ func TraverseInOrder(node *BinNode, visitor func(val int)) {
 	for {
 		for node != nil {
 			stack.Push(node)
-			node = node.leftChild
+			node = node.LeftChild
 		}
 		if stack.Empty() {
 			break
 		}
 		node = stack.Pop().(*BinNode)
-		visitor(node.data)
-		node = node.rightChild
+		visitor(node.Data)
+		node = node.RightChild
 	}
 }
 
@@ -116,12 +116,12 @@ func TraverseLevel(node *BinNode, visitor func(val int)) {
 	queue.Enqueue(node)
 	for !queue.Empty() {
 		node = queue.Dequeue().(*BinNode)
-		visitor(node.data)
-		if node.leftChild != nil {
-			queue.Enqueue(node.leftChild)
+		visitor(node.Data)
+		if node.LeftChild != nil {
+			queue.Enqueue(node.LeftChild)
 		}
-		if node.rightChild != nil {
-			queue.Enqueue(node.rightChild)
+		if node.RightChild != nil {
+			queue.Enqueue(node.RightChild)
 		}
 	}
 }
