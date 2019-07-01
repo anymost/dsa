@@ -54,8 +54,27 @@ func (binTree *BinTree) InsertAsRight(node *BinNode, val int) *BinNode {
 	return node.RightChild
 }
 
-func (binTree *BinTree) RemoveAt(node *BinNode) {
 
+func (binTree *BinTree) RemoveAt(node *BinNode, hot *BinNode) *BinNode {
+	w := node
+	var succ *BinNode
+	if node.LeftChild == nil {
+		node = node.RightChild
+		succ = node
+	} else if node.RightChild == nil {
+		node = node.LeftChild
+		succ = node
+	} else {
+		succ := w.Succ()
+		succ.Data, w.Data = w.Data, succ.Data
+		u := w.Parent
+		_ = u
+	}
+	hot = w.Parent
+	if succ != nil {
+		succ.Parent = hot
+	}
+	return succ
 }
 
 func structure(p *BinNode) int {

@@ -34,23 +34,17 @@ func (binNode *BinNode) InsertAsRight(val int) *BinNode {
 }
 
 func (binNode *BinNode) Succ() *BinNode {
-	return &BinNode{}
+	var succ *BinNode
+	if binNode.RightChild != nil {
+		node := binNode.RightChild
+		for node != nil {
+			succ = node
+			node = node.LeftChild
+		}
+	}
+	return succ
 }
 
-func (binNode *BinNode) TravelLevel(callback func(node *BinNode)) {
-
-}
-
-func (binNode *BinNode) TravelPre(callback func(node *BinNode)) {
-}
-
-func (binNode *BinNode) TravelIn(callback func(node *BinNode)) {
-
-}
-
-func (binNode *BinNode) TravelPost(callback func(node *BinNode)) {
-
-}
 
 func TraversePreOrder1(node *BinNode, callback func(val int)) {
 	if node == nil {

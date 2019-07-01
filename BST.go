@@ -45,13 +45,14 @@ func (bst *BST) Insert(target int) *BinNode {
 	return node
 }
 
-func (bst *BST) Remove(target int) *BinNode {
+func (bst *BST) Remove(target int) bool {
 	node := bst.Search(target)
 	if node == nil {
-		return nil
+		return false
 	}
-	bst.tree.RemoveAt(node)
+	bst.tree.RemoveAt(node, bst.hot)
 	bst.tree.size--
 	bst.tree.UpdateHeightAbove(node)
-	return node
+	return true
 }
+
